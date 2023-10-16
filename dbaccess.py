@@ -16,6 +16,7 @@ def getCon():
 
 
 def outputTofile(num):
+    # question_idから、問題の入出力をファイルに出力する（未使用関数）
     conn = getCon()
     cur = conn.cursor(cursor_factory=DictCursor)
     cur.execute(
@@ -26,20 +27,32 @@ def outputTofile(num):
 
     print(question)
 
-    strToFile(question["output"], "correct1.txt")
-    strToFile(question["output2"], "correct2.txt")
-    strToFile(question["output3"], "correct3.txt")
-    strToFile(question["input"], "input1.txt")
-    strToFile(question["input2"], "input2.txt")
-    strToFile(question["input3"], "input3.txt")
+    # strToFile(question["output"], "correct1.txt")
+    # strToFile(question["output2"], "correct2.txt")
+    # strToFile(question["output3"], "correct3.txt")
+    # strToFile(question["input"], "input1.txt")
+    # strToFile(question["input2"], "input2.txt")
+    # strToFile(question["input3"], "input3.txt")
+
+    for i in range(len(question["output"])):
+        strToFile(question["output"][i], f"correct{i+1}.txt")
+        strToFile(question["input"][i], f"input{i+1}.txt")
+
 
 def outputTofileByQuestion(question):
-    strToFile(question["output"], "correct1.txt")
-    strToFile(question["output2"], "correct2.txt")
-    strToFile(question["output3"], "correct3.txt")
-    strToFile(question["input"], "input1.txt")
-    strToFile(question["input2"], "input2.txt")
-    strToFile(question["input3"], "input3.txt")
+    # strToFile(question["output"], "correct1.txt")
+    # strToFile(question["output2"], "correct2.txt")
+    # strToFile(question["output3"], "correct3.txt")
+    # strToFile(question["input"], "input1.txt")
+    # strToFile(question["input2"], "input2.txt")
+    # strToFile(question["input3"], "input3.txt")
+
+    testcaseNUM = len(question["output"])
+
+    for i in range(testcaseNUM):
+        strToFile(question["output"][i], f"correct{i+1}.txt")
+        strToFile(question["input"][i], f"input{i+1}.txt")
+
 
 def strToFile(str, FileName):
     if os.path.exists(FileName):
@@ -137,7 +150,7 @@ def getSubmit(cond=''):
     conn = getCon()
     cur = conn.cursor(cursor_factory=DictCursor)
     cur.execute(query)
-    cols = [col.name for col in cur.description] # カラム名のリスト
+    cols = [col.name for col in cur.description]  # カラム名のリスト
     submits = "<table border='1'><thead><tr>"
     for col in cols:
         submits += "<th>" + col + "</th>"
@@ -146,7 +159,8 @@ def getSubmit(cond=''):
         d = dict(i)
         submits += "<tr>"
         for col in cols:
-            submits += "<td>" + (re.sub(r'[&\'"<>\n \t]', replaceSpecialCharacter, (str(d[col]))) if col in d else '&nbsp;') + "</td>"
+            submits += "<td>" + (re.sub(r'[&\'"<>\n \t]', replaceSpecialCharacter,
+                                        (str(d[col]))) if col in d else '&nbsp;') + "</td>"
         submits += "</tr>"
     submits += "</tbody></table>"
     cur.close()
@@ -182,8 +196,10 @@ def getSubmitByResponseID(response):
     # その他（数値のみの場合を含む）
     return getSubmit(f"WHERE response_id='{response}'")
 
+
 def getSubmitByID(response):
     return getSubmitByResponseID(response)
+
 
 def getResponseID(studentID, questionID, result, source):
     conn = getCon()

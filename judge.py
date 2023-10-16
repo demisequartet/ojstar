@@ -4,7 +4,7 @@ import re
 from hashlib import sha256
 
 
-def main(str, lineend = 0):
+def main(str, lineend=0):
     result = ""
 
     if "system" in str:
@@ -25,7 +25,7 @@ def stringToFile(str):
     f.close()
 
 
-def compile(FileName, lineend = 0, optlm = False):
+def compile(FileName, lineend=0, optlm=False):
     command = ["python3", "-m", "py_compile", "submit.py"]
 
     cp = subprocess.run(command, shell=False,
@@ -37,10 +37,12 @@ def compile(FileName, lineend = 0, optlm = False):
     return func(lineend)
 
 
-def func(lineend = 0):
+def func(lineend=0):
     command = ["python3", "submit.py"]
 
-    for index in range(1, 4):
+    testcaseNum = 3  # 何らかの手段で動的に取得する
+
+    for index in range(1, testcaseNum + 1):
 
         try:
             # refer https://docs.python.org/ja/3/library/subprocess.html
@@ -86,7 +88,7 @@ def answerJudge(stdout, FileName, lineend):
 # lineend >= 0 : 最終行の改行を取り除く（デフォルト）
 # lineend >= 1 : 各行の末尾空白を取り除く
 # lineend >= 2 : 先頭および末尾の空行を（空白文字があれば合わせて）取り除く
-def processLineEnd(str, lineend = 0):
+def processLineEnd(str, lineend=0):
     if lineend >= 2:
         str = re.sub(re.compile("\A(^\s*\n)+|(^\s*\n)+\s*\Z", re.M), "", str)
     if lineend >= 1:
@@ -119,7 +121,7 @@ def runModelAnswer(source, input):
     command = "python3 model.py"
     output = ""
     try:
-        cp = subprocess.run(command, input=input.replace(" ","\n").encode(), shell=True,
+        cp = subprocess.run(command, input=input.replace(" ", "\n").encode(), shell=True,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2, check=True)
         output = cp.stdout.decode("utf-8")
     except subprocess.TimeoutExpired:
@@ -130,6 +132,7 @@ def runModelAnswer(source, input):
     os.remove("model.py")
     # 結果を返す
     return output
+
 
 if __name__ == "__main__":
     FileName = ["accepted.c", "wronganswer.c",
