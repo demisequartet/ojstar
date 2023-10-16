@@ -18,7 +18,7 @@ CREATE TABLE question (
 );
 CREATE TABLE submit (
     response_id SERIAL NOT NULL,
-    student_id int NOT NULL,
+    student_id text NOT NULL,
     question_id int NOT NULL,
     result text NOT NULL,
     source text NOT NULL,
@@ -59,7 +59,8 @@ VALUES (
         E'Even\n',
         '',
         2
-    ),(
+    ),
+(
         2,
         '第2問',
         '回文判定',
